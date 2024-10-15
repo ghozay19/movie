@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
+import 'package:movies/core/constant/api_endpoints.dart';
 
 import '../../core/failure.dart';
 import '../model/movies_response_model.dart';
@@ -14,11 +15,15 @@ class MovieDatasourceImpl implements MovieDatasource {
 
   @override
   Future<Either<Failure, MoviesResponseModel>> getNowPlayingMovies(
-      int page) async {
+    int page,
+  ) async {
     try {
       final response = await dio.get(
-        'https://api.themoviedb.org/3/movie/now_playing',
-        queryParameters: {'page': page, 'language': 'en-US'},
+        ApiEndpoints.nowPlayingMovies,
+        queryParameters: {
+          'page': page,
+          'language': 'en-US',
+        },
       );
 
       return Right(MoviesResponseModel.fromJson(response.data));
