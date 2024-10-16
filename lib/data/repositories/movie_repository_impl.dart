@@ -7,10 +7,10 @@ import '../../core/constant/movies_sort_enum.dart';
 import '../../core/failure.dart';
 import '../../domain/entities/movies_response.dart';
 import '../../domain/repository/movie_repository.dart';
-import '../datasources/movie_datasource.dart';
+import '../datasources/remote/movie_datasource.dart';
 import '../mapper/movie_mapper.dart';
 
-@Injectable(as: MovieRepository)
+@LazySingleton(as: MovieRepository)
 class MovieRepositoriesImpl implements MovieRepository {
   final MovieDatasource remoteDatasource;
   MovieRepositoriesImpl(this.remoteDatasource);

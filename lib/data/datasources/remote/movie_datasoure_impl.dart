@@ -4,9 +4,9 @@ import 'package:injectable/injectable.dart';
 import 'package:movies/core/constant/api_endpoints.dart';
 import 'package:movies/data/model/genre_model.dart';
 
-import '../../core/constant/movies_sort_enum.dart';
-import '../../core/failure.dart';
-import '../model/movies_response_model.dart';
+import '../../../core/constant/movies_sort_enum.dart';
+import '../../../core/failure.dart';
+import '../../model/movies_response_model.dart';
 import 'movie_datasource.dart';
 
 @LazySingleton(as: MovieDatasource)

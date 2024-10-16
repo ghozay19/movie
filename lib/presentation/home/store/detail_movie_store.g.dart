@@ -25,24 +25,43 @@ mixin _$DetailMovieStore on _DetailMovieStore, Store {
     });
   }
 
-  late final _$_DetailMovieStoreActionController =
-      ActionController(name: '_DetailMovieStore', context: context);
+  late final _$isBookmarkedAtom =
+      Atom(name: '_DetailMovieStore.isBookmarked', context: context);
 
   @override
-  void setMovieId(Movie movie) {
-    final _$actionInfo = _$_DetailMovieStoreActionController.startAction(
-        name: '_DetailMovieStore.setMovieId');
-    try {
-      return super.setMovieId(movie);
-    } finally {
-      _$_DetailMovieStoreActionController.endAction(_$actionInfo);
-    }
+  bool get isBookmarked {
+    _$isBookmarkedAtom.reportRead();
+    return super.isBookmarked;
+  }
+
+  @override
+  set isBookmarked(bool value) {
+    _$isBookmarkedAtom.reportWrite(value, super.isBookmarked, () {
+      super.isBookmarked = value;
+    });
+  }
+
+  late final _$setMovieIdAsyncAction =
+      AsyncAction('_DetailMovieStore.setMovieId', context: context);
+
+  @override
+  Future<void> setMovieId(Movie movie) {
+    return _$setMovieIdAsyncAction.run(() => super.setMovieId(movie));
+  }
+
+  late final _$toggleBookmarkAsyncAction =
+      AsyncAction('_DetailMovieStore.toggleBookmark', context: context);
+
+  @override
+  Future<void> toggleBookmark() {
+    return _$toggleBookmarkAsyncAction.run(() => super.toggleBookmark());
   }
 
   @override
   String toString() {
     return '''
-detailMovie: ${detailMovie}
+detailMovie: ${detailMovie},
+isBookmarked: ${isBookmarked}
     ''';
   }
 }

@@ -226,8 +226,8 @@ class HomePage extends StatelessWidget {
                         padding: const EdgeInsets.all(2.0),
                         child: Card(
                           child: MovieImageNetwork(
-                            imageUrl: ApiEndpoints.baseImageUrl +
-                                upComing[index].posterPath,
+                            imageUrl:
+                                '${ApiEndpoints.baseImageUrl}${upComing[index].posterPath ?? ''}',
                             fit: BoxFit.cover,
                             width: double.infinity,
                             borderRadius: const BorderRadius.all(
