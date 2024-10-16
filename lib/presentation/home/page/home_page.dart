@@ -12,13 +12,29 @@ import '../../movie_image_network.dart';
 import '../store/home_store.dart';
 
 @RoutePage()
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final homeStore = GetIt.I<HomeStore>();
+  _HomePageState createState() => _HomePageState();
+}
 
+class _HomePageState extends State<HomePage> {
+  final homeStore = GetIt.I<HomeStore>();
+
+  @override
+  void initState() {
+    super.initState();
+    // Fetch genres when the widget is initialized
+    if (homeStore.genresFuture == null ||
+        (homeStore.genresFuture!.status == FutureStatus.pending &&
+            homeStore.genres.isEmpty)) {
+      homeStore.fetchGenres();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("Movies")),
       body: _buildBody(context),
@@ -26,18 +42,10 @@ class HomePage extends StatelessWidget {
   }
 
   Widget _buildBody(BuildContext context) {
-    final homeStore = GetIt.I<HomeStore>();
-
     return Column(
       children: [
         Observer(
           builder: (_) {
-            if (homeStore.genresFuture == null ||
-                (homeStore.genresFuture!.status == FutureStatus.pending &&
-                    homeStore.genres.isEmpty)) {
-              homeStore.fetchGenres();
-              return const Center(child: CircularProgressIndicator());
-            }
             final selectedGenre = homeStore.selectedGenre;
 
             return SizedBox(
@@ -67,89 +75,25 @@ class HomePage extends StatelessWidget {
                             }
                           },
                           itemBuilder: (context) => [
-                            PopupMenuItem<MoviesSortBy>(
-                              value: MoviesSortBy.popularityDesc,
-                              child: Row(
-                                children: [
-                                  if (homeStore.sortBy ==
-                                      MoviesSortBy.popularityDesc)
-                                    const Icon(Icons.check,
-                                        color: Colors.green),
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    I10n.current.popularity_desc,
-                                    style: TextStyle(
-                                      color: homeStore.sortBy ==
-                                              MoviesSortBy.popularityDesc
-                                          ? Colors.green
-                                          : Colors.black,
-                                    ),
-                                  ),
-                                ],
-                              ),
+                            _buildPopupMenuItem(
+                              MoviesSortBy.popularityDesc,
+                              homeStore.sortBy,
+                              I10n.current.popularity_desc,
                             ),
-                            PopupMenuItem<MoviesSortBy>(
-                              value: MoviesSortBy.popularityAsc,
-                              child: Row(
-                                children: [
-                                  if (homeStore.sortBy ==
-                                      MoviesSortBy.popularityAsc)
-                                    const Icon(Icons.check,
-                                        color: Colors.green),
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    I10n.current.popularity_asc,
-                                    style: TextStyle(
-                                      color: homeStore.sortBy ==
-                                              MoviesSortBy.popularityAsc
-                                          ? Colors.green
-                                          : Colors.black,
-                                    ),
-                                  ),
-                                ],
-                              ),
+                            _buildPopupMenuItem(
+                              MoviesSortBy.popularityAsc,
+                              homeStore.sortBy,
+                              I10n.current.popularity_asc,
                             ),
-                            PopupMenuItem<MoviesSortBy>(
-                              value: MoviesSortBy.releaseDateAsc,
-                              child: Row(
-                                children: [
-                                  if (homeStore.sortBy ==
-                                      MoviesSortBy.releaseDateAsc)
-                                    const Icon(Icons.check,
-                                        color: Colors.green),
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    I10n.current.release_date_asc,
-                                    style: TextStyle(
-                                      color: homeStore.sortBy ==
-                                              MoviesSortBy.releaseDateAsc
-                                          ? Colors.green
-                                          : Colors.black,
-                                    ),
-                                  ),
-                                ],
-                              ),
+                            _buildPopupMenuItem(
+                              MoviesSortBy.releaseDateAsc,
+                              homeStore.sortBy,
+                              I10n.current.release_date_asc,
                             ),
-                            PopupMenuItem<MoviesSortBy>(
-                              value: MoviesSortBy.releaseDateDesc,
-                              child: Row(
-                                children: [
-                                  if (homeStore.sortBy ==
-                                      MoviesSortBy.releaseDateDesc)
-                                    const Icon(Icons.check,
-                                        color: Colors.green),
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    I10n.current.release_date_desc,
-                                    style: TextStyle(
-                                      color: homeStore.sortBy ==
-                                              MoviesSortBy.releaseDateDesc
-                                          ? Colors.green
-                                          : Colors.black,
-                                    ),
-                                  ),
-                                ],
-                              ),
+                            _buildPopupMenuItem(
+                              MoviesSortBy.releaseDateDesc,
+                              homeStore.sortBy,
+                              I10n.current.release_date_desc,
                             ),
                           ],
                         ),
@@ -244,6 +188,26 @@ class HomePage extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+
+  PopupMenuItem<MoviesSortBy> _buildPopupMenuItem(
+      MoviesSortBy value, MoviesSortBy? currentSortBy, String title) {
+    return PopupMenuItem<MoviesSortBy>(
+      value: value,
+      child: Row(
+        children: [
+          if (currentSortBy == value)
+            const Icon(Icons.check, color: Colors.green),
+          const SizedBox(width: 8),
+          Text(
+            title,
+            style: TextStyle(
+              color: currentSortBy == value ? Colors.green : Colors.black,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

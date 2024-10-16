@@ -9,30 +9,32 @@
 // coverage:ignore-file
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:dio/dio.dart' as _i5;
+import 'package:dio/dio.dart' as _i6;
 import 'package:get_it/get_it.dart' as _i1;
 import 'package:injectable/injectable.dart' as _i2;
 
 import '../data/datasources/local/database.dart' as _i3;
-import '../data/datasources/local/movie_local_datasource.dart' as _i8;
-import '../data/datasources/local/movie_local_datasource_impl.dart' as _i9;
-import '../data/datasources/remote/movie_datasource.dart' as _i6;
-import '../data/datasources/remote/movie_datasoure_impl.dart' as _i7;
-import '../data/repositories/movie_local_repository_impl.dart' as _i11;
-import '../data/repositories/movie_repository_impl.dart' as _i13;
-import '../domain/repository/movie_local_repository.dart' as _i10;
-import '../domain/repository/movie_repository.dart' as _i12;
-import '../domain/usecase/remove_local_movie.dart' as _i14;
-import '../domain/usecase/retrieve_all_local_movies.dart' as _i15;
-import '../domain/usecase/retrieve_discovery_movies.dart' as _i16;
-import '../domain/usecase/retrieve_genres.dart' as _i17;
-import '../domain/usecase/retrieve_local_movie.dart' as _i18;
-import '../domain/usecase/store_movie_to_local.dart' as _i19;
-import '../presentation/home/store/detail_movie_store.dart' as _i20;
-import '../presentation/home/store/home_store.dart' as _i21;
+import '../data/datasources/local/movie_local_datasource.dart' as _i9;
+import '../data/datasources/local/movie_local_datasource_impl.dart' as _i10;
+import '../data/datasources/remote/movie_datasource.dart' as _i7;
+import '../data/datasources/remote/movie_datasoure_impl.dart' as _i8;
+import '../data/repositories/movie_local_repository_impl.dart' as _i12;
+import '../data/repositories/movie_repository_impl.dart' as _i14;
+import '../domain/repository/movie_local_repository.dart' as _i11;
+import '../domain/repository/movie_repository.dart' as _i13;
+import '../domain/usecase/remove_local_movie.dart' as _i15;
+import '../domain/usecase/retrieve_all_local_movies.dart' as _i16;
+import '../domain/usecase/retrieve_discovery_movies.dart' as _i17;
+import '../domain/usecase/retrieve_genres.dart' as _i18;
+import '../domain/usecase/retrieve_local_movie.dart' as _i19;
+import '../domain/usecase/store_movie_to_local.dart' as _i20;
+import '../presentation/bookmark/store/bookmark_store.dart' as _i21;
+import '../presentation/dashboard/store/dashboard_store.dart' as _i5;
+import '../presentation/detail/store/detail_movie_store.dart' as _i22;
+import '../presentation/home/store/home_store.dart' as _i23;
 import '../presentation/router/app_router.dart' as _i4;
-import 'network_module.dart' as _i22;
-import 'register_module.dart' as _i23;
+import 'network_module.dart' as _i24;
+import 'register_module.dart' as _i25;
 
 extension GetItInjectableX on _i1.GetIt {
   // initializes the registration of main-scope dependencies inside of GetIt
@@ -49,41 +51,44 @@ extension GetItInjectableX on _i1.GetIt {
     final networkModule = _$NetworkModule();
     gh.lazySingleton<_i3.AppDatabase>(() => registerModule.db);
     gh.lazySingleton<_i4.AppRouter>(() => _i4.AppRouter());
-    gh.lazySingleton<_i5.Dio>(() => networkModule.dio);
-    gh.lazySingleton<_i6.MovieDatasource>(
-        () => _i7.MovieDatasourceImpl(gh<_i5.Dio>()));
-    gh.lazySingleton<_i8.MovieLocalDatasource>(
-        () => _i9.MovieLocalDataSourceImpl(gh<_i3.AppDatabase>()));
-    gh.lazySingleton<_i10.MovieLocalRepository>(() =>
-        _i11.MovieLocalRepositoryImpl(
-            localDataSource: gh<_i8.MovieLocalDatasource>()));
-    gh.lazySingleton<_i12.MovieRepository>(
-        () => _i13.MovieRepositoriesImpl(gh<_i6.MovieDatasource>()));
-    gh.lazySingleton<_i14.RemoveLocalMovie>(
-        () => _i14.RemoveLocalMovie(gh<_i10.MovieLocalRepository>()));
-    gh.lazySingleton<_i15.RetrieveAllLocalMovies>(
-        () => _i15.RetrieveAllLocalMovies(gh<_i10.MovieLocalRepository>()));
-    gh.lazySingleton<_i16.RetrieveDiscoveryMovies>(
-        () => _i16.RetrieveDiscoveryMovies(gh<_i12.MovieRepository>()));
-    gh.lazySingleton<_i17.RetrieveGenres>(
-        () => _i17.RetrieveGenres(gh<_i12.MovieRepository>()));
-    gh.lazySingleton<_i18.RetrieveLocalMovie>(
-        () => _i18.RetrieveLocalMovie(gh<_i10.MovieLocalRepository>()));
-    gh.lazySingleton<_i19.StoreMovieToLocal>(
-        () => _i19.StoreMovieToLocal(gh<_i10.MovieLocalRepository>()));
-    gh.factory<_i20.DetailMovieStore>(() => _i20.DetailMovieStore(
-          gh<_i19.StoreMovieToLocal>(),
-          gh<_i14.RemoveLocalMovie>(),
-          gh<_i18.RetrieveLocalMovie>(),
+    gh.factory<_i5.DashboardStore>(() => _i5.DashboardStore());
+    gh.lazySingleton<_i6.Dio>(() => networkModule.dio);
+    gh.lazySingleton<_i7.MovieDatasource>(
+        () => _i8.MovieDatasourceImpl(gh<_i6.Dio>()));
+    gh.lazySingleton<_i9.MovieLocalDatasource>(
+        () => _i10.MovieLocalDataSourceImpl(gh<_i3.AppDatabase>()));
+    gh.lazySingleton<_i11.MovieLocalRepository>(() =>
+        _i12.MovieLocalRepositoryImpl(
+            localDataSource: gh<_i9.MovieLocalDatasource>()));
+    gh.lazySingleton<_i13.MovieRepository>(
+        () => _i14.MovieRepositoriesImpl(gh<_i7.MovieDatasource>()));
+    gh.lazySingleton<_i15.RemoveLocalMovie>(
+        () => _i15.RemoveLocalMovie(gh<_i11.MovieLocalRepository>()));
+    gh.lazySingleton<_i16.RetrieveAllLocalMovies>(
+        () => _i16.RetrieveAllLocalMovies(gh<_i11.MovieLocalRepository>()));
+    gh.lazySingleton<_i17.RetrieveDiscoveryMovies>(
+        () => _i17.RetrieveDiscoveryMovies(gh<_i13.MovieRepository>()));
+    gh.lazySingleton<_i18.RetrieveGenres>(
+        () => _i18.RetrieveGenres(gh<_i13.MovieRepository>()));
+    gh.lazySingleton<_i19.RetrieveLocalMovie>(
+        () => _i19.RetrieveLocalMovie(gh<_i11.MovieLocalRepository>()));
+    gh.lazySingleton<_i20.StoreMovieToLocal>(
+        () => _i20.StoreMovieToLocal(gh<_i11.MovieLocalRepository>()));
+    gh.factory<_i21.BookmarkStore>(
+        () => _i21.BookmarkStore(gh<_i16.RetrieveAllLocalMovies>()));
+    gh.factory<_i22.DetailMovieStore>(() => _i22.DetailMovieStore(
+          gh<_i20.StoreMovieToLocal>(),
+          gh<_i15.RemoveLocalMovie>(),
+          gh<_i19.RetrieveLocalMovie>(),
         ));
-    gh.factory<_i21.HomeStore>(() => _i21.HomeStore(
-          gh<_i17.RetrieveGenres>(),
-          gh<_i16.RetrieveDiscoveryMovies>(),
+    gh.factory<_i23.HomeStore>(() => _i23.HomeStore(
+          gh<_i18.RetrieveGenres>(),
+          gh<_i17.RetrieveDiscoveryMovies>(),
         ));
     return this;
   }
 }
 
-class _$NetworkModule extends _i22.NetworkModule {}
+class _$NetworkModule extends _i24.NetworkModule {}
 
-class _$RegisterModule extends _i23.RegisterModule {}
+class _$RegisterModule extends _i25.RegisterModule {}

@@ -32,6 +32,18 @@ class $MoviesTableTable extends MoviesTable
   late final GeneratedColumn<String> overview = GeneratedColumn<String>(
       'overview', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _posterPathMeta =
+      const VerificationMeta('posterPath');
+  @override
+  late final GeneratedColumn<String> posterPath = GeneratedColumn<String>(
+      'poster_path', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _backdropPathMeta =
+      const VerificationMeta('backdropPath');
+  @override
+  late final GeneratedColumn<String> backdropPath = GeneratedColumn<String>(
+      'backdrop_path', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
   static const VerificationMeta _releaseDateMeta =
       const VerificationMeta('releaseDate');
   @override
@@ -39,7 +51,8 @@ class $MoviesTableTable extends MoviesTable
       'release_date', aliasedName, true,
       type: DriftSqlType.dateTime, requiredDuringInsert: false);
   @override
-  List<GeneratedColumn> get $columns => [id, title, overview, releaseDate];
+  List<GeneratedColumn> get $columns =>
+      [id, title, overview, posterPath, backdropPath, releaseDate];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -63,6 +76,18 @@ class $MoviesTableTable extends MoviesTable
       context.handle(_overviewMeta,
           overview.isAcceptableOrUnknown(data['overview']!, _overviewMeta));
     }
+    if (data.containsKey('poster_path')) {
+      context.handle(
+          _posterPathMeta,
+          posterPath.isAcceptableOrUnknown(
+              data['poster_path']!, _posterPathMeta));
+    }
+    if (data.containsKey('backdrop_path')) {
+      context.handle(
+          _backdropPathMeta,
+          backdropPath.isAcceptableOrUnknown(
+              data['backdrop_path']!, _backdropPathMeta));
+    }
     if (data.containsKey('release_date')) {
       context.handle(
           _releaseDateMeta,
@@ -84,6 +109,10 @@ class $MoviesTableTable extends MoviesTable
           .read(DriftSqlType.string, data['${effectivePrefix}title'])!,
       overview: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}overview']),
+      posterPath: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}poster_path']),
+      backdropPath: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}backdrop_path']),
       releaseDate: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}release_date']),
     );
@@ -99,9 +128,16 @@ class MoviesTableData extends DataClass implements Insertable<MoviesTableData> {
   final int id;
   final String title;
   final String? overview;
+  final String? posterPath;
+  final String? backdropPath;
   final DateTime? releaseDate;
   const MoviesTableData(
-      {required this.id, required this.title, this.overview, this.releaseDate});
+      {required this.id,
+      required this.title,
+      this.overview,
+      this.posterPath,
+      this.backdropPath,
+      this.releaseDate});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -109,6 +145,12 @@ class MoviesTableData extends DataClass implements Insertable<MoviesTableData> {
     map['title'] = Variable<String>(title);
     if (!nullToAbsent || overview != null) {
       map['overview'] = Variable<String>(overview);
+    }
+    if (!nullToAbsent || posterPath != null) {
+      map['poster_path'] = Variable<String>(posterPath);
+    }
+    if (!nullToAbsent || backdropPath != null) {
+      map['backdrop_path'] = Variable<String>(backdropPath);
     }
     if (!nullToAbsent || releaseDate != null) {
       map['release_date'] = Variable<DateTime>(releaseDate);
@@ -123,6 +165,12 @@ class MoviesTableData extends DataClass implements Insertable<MoviesTableData> {
       overview: overview == null && nullToAbsent
           ? const Value.absent()
           : Value(overview),
+      posterPath: posterPath == null && nullToAbsent
+          ? const Value.absent()
+          : Value(posterPath),
+      backdropPath: backdropPath == null && nullToAbsent
+          ? const Value.absent()
+          : Value(backdropPath),
       releaseDate: releaseDate == null && nullToAbsent
           ? const Value.absent()
           : Value(releaseDate),
@@ -136,6 +184,8 @@ class MoviesTableData extends DataClass implements Insertable<MoviesTableData> {
       id: serializer.fromJson<int>(json['id']),
       title: serializer.fromJson<String>(json['title']),
       overview: serializer.fromJson<String?>(json['overview']),
+      posterPath: serializer.fromJson<String?>(json['posterPath']),
+      backdropPath: serializer.fromJson<String?>(json['backdropPath']),
       releaseDate: serializer.fromJson<DateTime?>(json['releaseDate']),
     );
   }
@@ -146,6 +196,8 @@ class MoviesTableData extends DataClass implements Insertable<MoviesTableData> {
       'id': serializer.toJson<int>(id),
       'title': serializer.toJson<String>(title),
       'overview': serializer.toJson<String?>(overview),
+      'posterPath': serializer.toJson<String?>(posterPath),
+      'backdropPath': serializer.toJson<String?>(backdropPath),
       'releaseDate': serializer.toJson<DateTime?>(releaseDate),
     };
   }
@@ -154,11 +206,16 @@ class MoviesTableData extends DataClass implements Insertable<MoviesTableData> {
           {int? id,
           String? title,
           Value<String?> overview = const Value.absent(),
+          Value<String?> posterPath = const Value.absent(),
+          Value<String?> backdropPath = const Value.absent(),
           Value<DateTime?> releaseDate = const Value.absent()}) =>
       MoviesTableData(
         id: id ?? this.id,
         title: title ?? this.title,
         overview: overview.present ? overview.value : this.overview,
+        posterPath: posterPath.present ? posterPath.value : this.posterPath,
+        backdropPath:
+            backdropPath.present ? backdropPath.value : this.backdropPath,
         releaseDate: releaseDate.present ? releaseDate.value : this.releaseDate,
       );
   @override
@@ -167,13 +224,16 @@ class MoviesTableData extends DataClass implements Insertable<MoviesTableData> {
           ..write('id: $id, ')
           ..write('title: $title, ')
           ..write('overview: $overview, ')
+          ..write('posterPath: $posterPath, ')
+          ..write('backdropPath: $backdropPath, ')
           ..write('releaseDate: $releaseDate')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, title, overview, releaseDate);
+  int get hashCode =>
+      Object.hash(id, title, overview, posterPath, backdropPath, releaseDate);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -181,6 +241,8 @@ class MoviesTableData extends DataClass implements Insertable<MoviesTableData> {
           other.id == this.id &&
           other.title == this.title &&
           other.overview == this.overview &&
+          other.posterPath == this.posterPath &&
+          other.backdropPath == this.backdropPath &&
           other.releaseDate == this.releaseDate);
 }
 
@@ -188,29 +250,39 @@ class MoviesTableCompanion extends UpdateCompanion<MoviesTableData> {
   final Value<int> id;
   final Value<String> title;
   final Value<String?> overview;
+  final Value<String?> posterPath;
+  final Value<String?> backdropPath;
   final Value<DateTime?> releaseDate;
   const MoviesTableCompanion({
     this.id = const Value.absent(),
     this.title = const Value.absent(),
     this.overview = const Value.absent(),
+    this.posterPath = const Value.absent(),
+    this.backdropPath = const Value.absent(),
     this.releaseDate = const Value.absent(),
   });
   MoviesTableCompanion.insert({
     this.id = const Value.absent(),
     required String title,
     this.overview = const Value.absent(),
+    this.posterPath = const Value.absent(),
+    this.backdropPath = const Value.absent(),
     this.releaseDate = const Value.absent(),
   }) : title = Value(title);
   static Insertable<MoviesTableData> custom({
     Expression<int>? id,
     Expression<String>? title,
     Expression<String>? overview,
+    Expression<String>? posterPath,
+    Expression<String>? backdropPath,
     Expression<DateTime>? releaseDate,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (title != null) 'title': title,
       if (overview != null) 'overview': overview,
+      if (posterPath != null) 'poster_path': posterPath,
+      if (backdropPath != null) 'backdrop_path': backdropPath,
       if (releaseDate != null) 'release_date': releaseDate,
     });
   }
@@ -219,11 +291,15 @@ class MoviesTableCompanion extends UpdateCompanion<MoviesTableData> {
       {Value<int>? id,
       Value<String>? title,
       Value<String?>? overview,
+      Value<String?>? posterPath,
+      Value<String?>? backdropPath,
       Value<DateTime?>? releaseDate}) {
     return MoviesTableCompanion(
       id: id ?? this.id,
       title: title ?? this.title,
       overview: overview ?? this.overview,
+      posterPath: posterPath ?? this.posterPath,
+      backdropPath: backdropPath ?? this.backdropPath,
       releaseDate: releaseDate ?? this.releaseDate,
     );
   }
@@ -240,6 +316,12 @@ class MoviesTableCompanion extends UpdateCompanion<MoviesTableData> {
     if (overview.present) {
       map['overview'] = Variable<String>(overview.value);
     }
+    if (posterPath.present) {
+      map['poster_path'] = Variable<String>(posterPath.value);
+    }
+    if (backdropPath.present) {
+      map['backdrop_path'] = Variable<String>(backdropPath.value);
+    }
     if (releaseDate.present) {
       map['release_date'] = Variable<DateTime>(releaseDate.value);
     }
@@ -252,6 +334,8 @@ class MoviesTableCompanion extends UpdateCompanion<MoviesTableData> {
           ..write('id: $id, ')
           ..write('title: $title, ')
           ..write('overview: $overview, ')
+          ..write('posterPath: $posterPath, ')
+          ..write('backdropPath: $backdropPath, ')
           ..write('releaseDate: $releaseDate')
           ..write(')'))
         .toString();
@@ -275,6 +359,8 @@ typedef $$MoviesTableTableInsertCompanionBuilder = MoviesTableCompanion
   Value<int> id,
   required String title,
   Value<String?> overview,
+  Value<String?> posterPath,
+  Value<String?> backdropPath,
   Value<DateTime?> releaseDate,
 });
 typedef $$MoviesTableTableUpdateCompanionBuilder = MoviesTableCompanion
@@ -282,6 +368,8 @@ typedef $$MoviesTableTableUpdateCompanionBuilder = MoviesTableCompanion
   Value<int> id,
   Value<String> title,
   Value<String?> overview,
+  Value<String?> posterPath,
+  Value<String?> backdropPath,
   Value<DateTime?> releaseDate,
 });
 
@@ -308,24 +396,32 @@ class $$MoviesTableTableTableManager extends RootTableManager<
             Value<int> id = const Value.absent(),
             Value<String> title = const Value.absent(),
             Value<String?> overview = const Value.absent(),
+            Value<String?> posterPath = const Value.absent(),
+            Value<String?> backdropPath = const Value.absent(),
             Value<DateTime?> releaseDate = const Value.absent(),
           }) =>
               MoviesTableCompanion(
             id: id,
             title: title,
             overview: overview,
+            posterPath: posterPath,
+            backdropPath: backdropPath,
             releaseDate: releaseDate,
           ),
           getInsertCompanionBuilder: ({
             Value<int> id = const Value.absent(),
             required String title,
             Value<String?> overview = const Value.absent(),
+            Value<String?> posterPath = const Value.absent(),
+            Value<String?> backdropPath = const Value.absent(),
             Value<DateTime?> releaseDate = const Value.absent(),
           }) =>
               MoviesTableCompanion.insert(
             id: id,
             title: title,
             overview: overview,
+            posterPath: posterPath,
+            backdropPath: backdropPath,
             releaseDate: releaseDate,
           ),
         ));
@@ -361,6 +457,16 @@ class $$MoviesTableTableFilterComposer
       builder: (column, joinBuilders) =>
           ColumnFilters(column, joinBuilders: joinBuilders));
 
+  ColumnFilters<String> get posterPath => $state.composableBuilder(
+      column: $state.table.posterPath,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get backdropPath => $state.composableBuilder(
+      column: $state.table.backdropPath,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
   ColumnFilters<DateTime> get releaseDate => $state.composableBuilder(
       column: $state.table.releaseDate,
       builder: (column, joinBuilders) =>
@@ -382,6 +488,16 @@ class $$MoviesTableTableOrderingComposer
 
   ColumnOrderings<String> get overview => $state.composableBuilder(
       column: $state.table.overview,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get posterPath => $state.composableBuilder(
+      column: $state.table.posterPath,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get backdropPath => $state.composableBuilder(
+      column: $state.table.backdropPath,
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
 

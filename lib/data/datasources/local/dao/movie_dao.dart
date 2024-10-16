@@ -15,6 +15,8 @@ class MovieDao extends DatabaseAccessor<AppDatabase> with _$MovieDaoMixin {
       id: Value(movie.id ?? 0),
       title: Value(movie.title ?? ''),
       overview: Value(movie.overview),
+      backdropPath: Value(movie.backdropPath),
+      posterPath: Value(movie.posterPath),
       releaseDate: movie.releaseDate != null
           ? Value(movie.releaseDate!)
           : const Value(null),
@@ -31,7 +33,9 @@ class MovieDao extends DatabaseAccessor<AppDatabase> with _$MovieDaoMixin {
         id: row.id,
         title: row.title,
         overview: row.overview,
+        posterPath: row.posterPath,
         releaseDate: row.releaseDate,
+        backdropPath: row.backdropPath,
       );
     }).toList();
   }
@@ -53,6 +57,8 @@ class MovieDao extends DatabaseAccessor<AppDatabase> with _$MovieDaoMixin {
       title: movieRow.title,
       overview: movieRow.overview,
       releaseDate: movieRow.releaseDate,
+      backdropPath: movieRow.backdropPath,
+      posterPath: movieRow.posterPath,
     );
   }
 }

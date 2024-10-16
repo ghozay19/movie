@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 import 'package:movies/domain/usecase/retrieve_local_movie.dart';
@@ -29,10 +28,7 @@ abstract class _DetailMovieStore with Store {
   Future<void> setMovieId(Movie movie) async {
     detailMovie = movie;
     final isMovieExist = await _retrieveLocalMovie.call(movie.id!);
-    // isMovieExist.fold(
-    //   (exception) => debugPrint('Error occurred: $exception'),
-    //   (result) => isBookmarked = true,
-    // );
+
     isMovieExist.fold(
       (failure) {
         isBookmarked = false;

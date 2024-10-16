@@ -33,6 +33,8 @@ class MovieLocalDataSourceImpl implements MovieLocalDatasource {
                 title: data.title,
                 overview: data.overview,
                 releaseDate: data.releaseDate,
+                backdropPath: data.backdropPath,
+                posterPath: data.posterPath,
               ))
           .toList();
       return Right(movies);
