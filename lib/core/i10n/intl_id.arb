@@ -1,0 +1,8 @@
+{
+  "username": "Username",
+  "popularity_desc":"Populer: Tinggi-Rendah",
+  "popularity_asc":"Populer: Rendah-Tinggi",
+  "release_date_asc":"Tanggal Rilis: Terlama",
+  "release_date_desc":"Tanggal Rilis: Terbaru"
+  
+}

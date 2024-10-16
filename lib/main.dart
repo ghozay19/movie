@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:movies/di/injection.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
+
 import 'core/constant/app_sizes.dart';
+import 'core/i10n/l10n.dart';
 import 'presentation/router/app_router.dart';
 
 void main() async {
@@ -28,11 +30,26 @@ class MyApp extends StatelessWidget {
         designSize: Size(AppSizes.appScreenWidth, AppSizes.appScreenHeight),
         builder: (context, child) => MaterialApp.router(
           debugShowCheckedModeBanner: false,
+          localizationsDelegates: const [
+            I10n.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
           supportedLocales: const [
             Locale('en'),
+            Locale('id'),
           ],
+          localeResolutionCallback: (locale, supportedLocales) {
+            if (locale == null) return supportedLocales.first;
+            for (var supportedLocale in supportedLocales) {
+              if (supportedLocale.languageCode == locale.languageCode) {
+                return supportedLocale;
+              }
+            }
+            return supportedLocales.first;
+          },
           routerConfig: getIt<AppRouter>().config(),
-          builder: EasyLoading.init(),
         ),
       ),
     );
