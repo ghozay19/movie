@@ -11,6 +11,9 @@ dependencies:
   dio: ^5.4.0
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter  
+    
   flutter_dotenv: ^5.2.1
   get_it: ^7.6.0
   injectable: 2.1.2
@@ -21,7 +24,8 @@ dependencies:
   cached_network_image: ^3.3.1
   shimmer: ^3.0.0
   flutter_screenutil: ^5.8.4
-  flutter_easyloading: ^3.0.5
+  intl: ^0.18.1
+  intl_utils: ^2.8.3
 
 dev_dependencies:
   auto_route_generator: ^7.1.1
@@ -37,3 +41,10 @@ flutter:
   assets:
     - assets/
     - .env
+
+flutter_intl:
+  generate: true
+  enabled: true
+  class_name: I10n
+  arb_dir: lib/core/i10n
+  output_dir: lib/core/i10n

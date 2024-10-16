@@ -1,7 +1,10 @@
 // ignore: depend_on_referenced_packages
 import 'package:auto_route/auto_route.dart';
+import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
 
+import '../../domain/entities/movie.dart';
+import '../home/page/detail_movie_page.dart';
 import '../home/page/home_page.dart';
 import 'app_pages.dart';
 
@@ -16,6 +19,10 @@ class AppRouter extends _$AppRouter {
           path: AppPages.homeRoute,
           page: HomeRoute.page,
           initial: true,
+        ),
+        AutoRoute(
+          path: AppPages.detailMovieRoute,
+          page: MovieDetailRoute.page,
         ),
       ];
 }

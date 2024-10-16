@@ -50,7 +50,7 @@ class MovieDatasourceImpl implements MovieDatasource {
         ApiEndpoints.discoverMovies,
         queryParameters: {
           'page': page,
-          'language': 'id-ID',
+          'language': 'en-EN',
           'with_genres': genreId,
           'sort_by': sortBy?.value,
         },

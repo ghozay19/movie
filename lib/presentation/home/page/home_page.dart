@@ -5,7 +5,9 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mobx/mobx.dart';
 import 'package:movies/core/constant/movies_sort_enum.dart';
+import 'package:movies/presentation/router/app_router.dart';
 import '../../../core/constant/api_endpoints.dart';
+import '../../../core/i10n/l10n.dart';
 import '../../movie_image_network.dart';
 import '../store/home_store.dart';
 
@@ -75,7 +77,7 @@ class HomePage extends StatelessWidget {
                                         color: Colors.green),
                                   const SizedBox(width: 8),
                                   Text(
-                                    'Popularity: High-Low',
+                                    I10n.current.popularity_desc,
                                     style: TextStyle(
                                       color: homeStore.sortBy ==
                                               MoviesSortBy.popularityDesc
@@ -96,7 +98,7 @@ class HomePage extends StatelessWidget {
                                         color: Colors.green),
                                   const SizedBox(width: 8),
                                   Text(
-                                    'Popularity: Low-High',
+                                    I10n.current.popularity_asc,
                                     style: TextStyle(
                                       color: homeStore.sortBy ==
                                               MoviesSortBy.popularityAsc
@@ -117,7 +119,7 @@ class HomePage extends StatelessWidget {
                                         color: Colors.green),
                                   const SizedBox(width: 8),
                                   Text(
-                                    'Release Date: Oldest',
+                                    I10n.current.release_date_asc,
                                     style: TextStyle(
                                       color: homeStore.sortBy ==
                                               MoviesSortBy.releaseDateAsc
@@ -138,7 +140,7 @@ class HomePage extends StatelessWidget {
                                         color: Colors.green),
                                   const SizedBox(width: 8),
                                   Text(
-                                    'Release Date: Newest',
+                                    I10n.current.release_date_desc,
                                     style: TextStyle(
                                       color: homeStore.sortBy ==
                                               MoviesSortBy.releaseDateDesc
@@ -213,16 +215,24 @@ class HomePage extends StatelessWidget {
                   ),
                   itemCount: upComing.length,
                   itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.all(2.0),
-                      child: Card(
-                        child: MovieImageNetwork(
-                          imageUrl: ApiEndpoints.baseImageUrl +
-                              upComing[index].posterPath,
-                          fit: BoxFit.cover,
-                          width: double.infinity,
-                          borderRadius: const BorderRadius.all(
-                            Radius.circular(8),
+                    return InkWell(
+                      onTap: () {
+                        final movieId = upComing[index];
+
+                        AutoRouter.of(context)
+                            .push(MovieDetailRoute(detailMovie: movieId));
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(2.0),
+                        child: Card(
+                          child: MovieImageNetwork(
+                            imageUrl: ApiEndpoints.baseImageUrl +
+                                upComing[index].posterPath,
+                            fit: BoxFit.cover,
+                            width: double.infinity,
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(8),
+                            ),
                           ),
                         ),
                       ),
