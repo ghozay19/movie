@@ -17,9 +17,11 @@ import '../data/datasources/movie_datasource.dart' as _i5;
 import '../data/datasources/movie_datasoure_impl.dart' as _i6;
 import '../data/repositories/movie_repository_impl.dart' as _i8;
 import '../domain/repository/movie_repository.dart' as _i7;
-import '../presentation/home/store/home_store.dart' as _i9;
+import '../domain/usecase/retrieve_discovery_movies.dart' as _i9;
+import '../domain/usecase/retrieve_genres.dart' as _i10;
+import '../presentation/home/store/home_store.dart' as _i11;
 import '../presentation/router/app_router.dart' as _i3;
-import 'network_module.dart' as _i10;
+import 'network_module.dart' as _i12;
 
 extension GetItInjectableX on _i1.GetIt {
   // initializes the registration of main-scope dependencies inside of GetIt
@@ -39,9 +41,16 @@ extension GetItInjectableX on _i1.GetIt {
         () => _i6.MovieDatasourceImpl(gh<_i4.Dio>()));
     gh.factory<_i7.MovieRepository>(
         () => _i8.MovieRepositoriesImpl(gh<_i5.MovieDatasource>()));
-    gh.factory<_i9.HomeStore>(() => _i9.HomeStore(gh<_i7.MovieRepository>()));
+    gh.lazySingleton<_i9.RetrieveDiscoveryMovies>(
+        () => _i9.RetrieveDiscoveryMovies(gh<_i7.MovieRepository>()));
+    gh.lazySingleton<_i10.RetrieveGenres>(
+        () => _i10.RetrieveGenres(gh<_i7.MovieRepository>()));
+    gh.factory<_i11.HomeStore>(() => _i11.HomeStore(
+          gh<_i10.RetrieveGenres>(),
+          gh<_i9.RetrieveDiscoveryMovies>(),
+        ));
     return this;
   }
 }
 
-class _$NetworkModule extends _i10.NetworkModule {}
+class _$NetworkModule extends _i12.NetworkModule {}

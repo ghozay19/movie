@@ -1,3 +1,4 @@
+// ignore: depend_on_referenced_packages
 import 'package:auto_route/auto_route.dart';
 import 'package:injectable/injectable.dart';
 

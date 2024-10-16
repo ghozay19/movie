@@ -43,11 +43,20 @@ class MovieImageNetwork extends StatelessWidget {
                 );
               },
               placeholder: (context, url) {
-                return Image.asset(
-                  imageNotFound,
-                  fit: fit ?? BoxFit.fill,
-                  width: height,
-                  height: width,
+                return const Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Center(
+                    child: SizedBox(
+                      height: 30,
+                      width: 30,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          Colors.grey,
+                        ),
+                      ),
+                    ),
+                  ),
                 );
               },
             ),
