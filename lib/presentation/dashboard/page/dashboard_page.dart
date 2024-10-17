@@ -1,3 +1,6 @@
+// ignore_for_file: library_private_types_in_public_api
+
+// ignore: depend_on_referenced_packages
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -24,10 +27,9 @@ class _DashboardPageState extends State<DashboardPage>
   @override
   void initState() {
     super.initState();
-    // Initialize the TabController with two tabs, sync with the dashboardStore
+
     _tabController = TabController(length: 2, vsync: this);
     _tabController.addListener(() {
-      // Sync with dashboardStore when tab changes
       if (_tabController.index != dashboardStore.selectedIndex) {
         dashboardStore.setSelectedIndex(_tabController.index);
       }
@@ -48,8 +50,8 @@ class _DashboardPageState extends State<DashboardPage>
           ),
           bottomNavigationBar: BottomNavigationBar(
             currentIndex: dashboardStore.selectedIndex,
+            selectedItemColor: Colors.green,
             onTap: (index) {
-              // Update TabController index on bottom navigation tap
               dashboardStore.setSelectedIndex(index);
               _tabController.animateTo(index);
             },

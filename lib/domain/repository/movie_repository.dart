@@ -12,4 +12,8 @@ abstract class MovieRepository {
     MoviesSortBy? sortBy,
   });
   Future<Either<Failure, List<Genre>>> getGenres();
+  Future<Either<Failure, MoviesResponse>> searchMovies({
+    required int page,
+    required String query,
+  });
 }

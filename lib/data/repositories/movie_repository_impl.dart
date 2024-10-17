@@ -30,12 +30,33 @@ class MovieRepositoriesImpl implements MovieRepository {
   }
 
   @override
-  Future<Either<Failure, MoviesResponse>> getDiscoverMovies(
-      {required int page, int? genreId, MoviesSortBy? sortBy}) async {
+  Future<Either<Failure, MoviesResponse>> getDiscoverMovies({
+    required int page,
+    int? genreId,
+    MoviesSortBy? sortBy,
+  }) async {
     final result = await _remoteDatasource.getDiscoverMovies(
       page: page,
       genreId: genreId,
       sortBy: sortBy,
+    );
+    return result.fold(
+      (failure) {
+        return Left(failure);
+      },
+      (moviesResponse) {
+        final movies = MovieMapper.toEntity(moviesResponse);
+        return Right(movies);
+      },
+    );
+  }
+
+  @override
+  Future<Either<Failure, MoviesResponse>> searchMovies(
+      {required int page, required String query}) async {
+    final result = await _remoteDatasource.searchMovies(
+      page: page,
+      query: query,
     );
     return result.fold(
       (failure) {

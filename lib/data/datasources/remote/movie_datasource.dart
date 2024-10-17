@@ -12,4 +12,8 @@ abstract class MovieDatasource {
     int? genreId,
     MoviesSortBy? sortBy,
   });
+  Future<Either<Failure, MoviesResponseModel>> searchMovies({
+    required int page,
+    required String query,
+  });
 }

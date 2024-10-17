@@ -20,21 +20,13 @@ void main() async {
     throw Exception('Error loading .env file: $e');
   }
   await configureDependencies();
-  final themeStore = getIt<ThemeStore>();
 
-  // Load saved theme preference
-  await themeStore.loadThemePreference();
-  runApp(MyApp(
-    themeStore: themeStore,
-  ));
+  runApp(const MyApp());
 }
 
 class MyApp extends StatefulWidget {
-  final ThemeStore themeStore;
-
   const MyApp({
     super.key,
-    required this.themeStore,
   });
 
   @override

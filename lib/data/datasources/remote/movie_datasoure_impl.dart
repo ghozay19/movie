@@ -76,4 +76,40 @@ class MovieDatasourceImpl implements MovieDatasource {
       );
     }
   }
+
+  @override
+  Future<Either<Failure, MoviesResponseModel>> searchMovies({
+    required int page,
+    required String query,
+  }) async {
+    try {
+      final response = await dio.get(
+        ApiEndpoints.searchMovies,
+        queryParameters: {
+          'page': page,
+          'language': 'en-EN',
+          'query': query,
+        },
+      );
+
+      return Right(
+        MoviesResponseModel.fromJson(response.data),
+      );
+    } on DioException catch (error) {
+      if (error.type == DioExceptionType.unknown) {
+        return Left(
+          NetworkFailure('Network error: ${error.message}'),
+        );
+      } else {
+        return Left(
+          ServerFailure(
+              'Server error: ${error.response?.statusMessage ?? 'Unknown error'}'),
+        );
+      }
+    } catch (error) {
+      return Left(
+        ServerFailure('Unexpected error: $error'),
+      );
+    }
+  }
 }

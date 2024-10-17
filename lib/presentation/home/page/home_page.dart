@@ -63,6 +63,22 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
         body: _buildBody(context),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            // if (controller.isSearchMode.value) {
+            //   controller.isSearchMode.value = false;
+            //   return;
+            // }
+            // _showSearchDialog(context);
+          },
+          tooltip: 'Search',
+          child: const Visibility(
+            // visible: controller.isSearchMode.value,
+            visible: false,
+            replacement: Icon(Icons.search),
+            child: Icon(Icons.close),
+          ),
+        ),
       );
     });
   }
