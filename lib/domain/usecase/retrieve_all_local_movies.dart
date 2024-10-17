@@ -7,12 +7,12 @@ import '../entities/movie.dart';
 
 @LazySingleton()
 class RetrieveAllLocalMovies implements UseCase<List<Movie>, NoParams> {
-  final MovieLocalRepository movieLocalRepository;
+  final MovieLocalRepository _movieLocalRepository;
 
-  RetrieveAllLocalMovies(this.movieLocalRepository);
+  RetrieveAllLocalMovies(this._movieLocalRepository);
 
   @override
   Future<Either<Failure, List<Movie>>> call(NoParams params) async {
-    return await movieLocalRepository.getAllMovies();
+    return await _movieLocalRepository.getAllMovies();
   }
 }

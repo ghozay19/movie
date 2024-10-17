@@ -8,27 +8,59 @@ import '../../domain/repository/movie_local_repository.dart';
 
 @LazySingleton(as: MovieLocalRepository)
 class MovieLocalRepositoryImpl implements MovieLocalRepository {
-  final MovieLocalDatasource localDataSource;
+  final MovieLocalDatasource _localDataSource;
 
-  MovieLocalRepositoryImpl({required this.localDataSource});
+  MovieLocalRepositoryImpl(this._localDataSource);
 
   @override
   Future<Either<Failure, Option<Movie>>> getMovieById(int id) async {
-    return await localDataSource.getMovieById(id);
+    final result = await _localDataSource.getMovieById(id);
+    return result.fold(
+      (failure) {
+        return Left(failure);
+      },
+      (movies) {
+        return Right(movies);
+      },
+    );
   }
 
   @override
   Future<Either<Failure, int>> insertMovie(Movie movie) async {
-    return await localDataSource.insertMovie(movie);
+    final result = await _localDataSource.insertMovie(movie);
+    return result.fold(
+      (failure) {
+        return Left(failure);
+      },
+      (movie) {
+        return Right(movie);
+      },
+    );
   }
 
   @override
   Future<Either<Failure, List<Movie>>> getAllMovies() async {
-    return await localDataSource.getAllMovies();
+    final result = await _localDataSource.getAllMovies();
+    return result.fold(
+      (failure) {
+        return Left(failure);
+      },
+      (movies) {
+        return Right(movies);
+      },
+    );
   }
 
   @override
   Future<Either<Failure, int>> deleteMovie(int id) async {
-    return await localDataSource.deleteMovie(id);
+    final result = await _localDataSource.deleteMovie(id);
+    return result.fold(
+      (failure) {
+        return Left(failure);
+      },
+      (result) {
+        return Right(result);
+      },
+    );
   }
 }

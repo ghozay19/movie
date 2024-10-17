@@ -6,12 +6,12 @@ import 'package:injectable/injectable.dart';
 
 @LazySingleton()
 class RemoveLocalMovie implements UseCase<int, int> {
-  final MovieLocalRepository movieLocalRepository;
+  final MovieLocalRepository _movieLocalRepository;
 
-  RemoveLocalMovie(this.movieLocalRepository);
+  RemoveLocalMovie(this._movieLocalRepository);
 
   @override
   Future<Either<Failure, int>> call(int params) async {
-    return await movieLocalRepository.deleteMovie(params);
+    return await _movieLocalRepository.deleteMovie(params);
   }
 }

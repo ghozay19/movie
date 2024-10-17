@@ -1,13 +1,15 @@
+// ignore: depend_on_referenced_packages
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mobx/mobx.dart';
 import 'package:movies/core/constant/movies_sort_enum.dart';
 import 'package:movies/presentation/router/app_router.dart';
+import 'package:movies/presentation/theme/theme_store.dart';
 import '../../../core/constant/api_endpoints.dart';
 import '../../../core/i10n/l10n.dart';
+import '../../../main.dart';
 import '../../movie_image_network.dart';
 import '../store/home_store.dart';
 
@@ -21,11 +23,12 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final homeStore = GetIt.I<HomeStore>();
+  final themeStore = GetIt.I<ThemeStore>();
 
   @override
   void initState() {
     super.initState();
-    // Fetch genres when the widget is initialized
+
     if (homeStore.genresFuture == null ||
         (homeStore.genresFuture!.status == FutureStatus.pending &&
             homeStore.genres.isEmpty)) {
@@ -35,10 +38,33 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text("Movies")),
-      body: _buildBody(context),
-    );
+    final myAppState = context.findAncestorStateOfType<MyAppState>();
+
+    return Observer(builder: (_) {
+      return Scaffold(
+        appBar: AppBar(
+          title: const Text("Movies"),
+          actions: [
+            IconButton(
+              icon: Icon(
+                themeStore.themeMode == ThemeMode.dark
+                    ? Icons.wb_sunny
+                    : Icons.nights_stay,
+                color: themeStore.themeMode == ThemeMode.dark
+                    ? Colors.white
+                    : Colors.black,
+              ),
+              onPressed: () {
+                final isDarkMode = themeStore.themeMode == ThemeMode.dark;
+                themeStore.toggleTheme(!isDarkMode);
+                myAppState?.rebuildApp();
+              },
+            )
+          ],
+        ),
+        body: _buildBody(context),
+      );
+    });
   }
 
   Widget _buildBody(BuildContext context) {
@@ -58,7 +84,7 @@ class _HomePageState extends State<HomePage> {
                       height: 40,
                       decoration: BoxDecoration(
                         border: Border.all(
-                          color: Colors.black,
+                          color: Theme.of(context).colorScheme.outline,
                         ),
                         borderRadius:
                             const BorderRadius.all(Radius.circular(10)),
@@ -195,18 +221,11 @@ class _HomePageState extends State<HomePage> {
       MoviesSortBy value, MoviesSortBy? currentSortBy, String title) {
     return PopupMenuItem<MoviesSortBy>(
       value: value,
-      child: Row(
-        children: [
-          if (currentSortBy == value)
-            const Icon(Icons.check, color: Colors.green),
-          const SizedBox(width: 8),
-          Text(
-            title,
-            style: TextStyle(
-              color: currentSortBy == value ? Colors.green : Colors.black,
-            ),
-          ),
-        ],
+      child: Text(
+        title,
+        style: TextStyle(
+          color: currentSortBy == value ? Colors.green : null,
+        ),
       ),
     );
   }

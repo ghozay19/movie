@@ -342,16 +342,204 @@ class MoviesTableCompanion extends UpdateCompanion<MoviesTableData> {
   }
 }
 
+class $ThemePreferencesTableTable extends ThemePreferencesTable
+    with TableInfo<$ThemePreferencesTableTable, ThemePreferencesTableData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ThemePreferencesTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _isDarkModeMeta =
+      const VerificationMeta('isDarkMode');
+  @override
+  late final GeneratedColumn<bool> isDarkMode = GeneratedColumn<bool>(
+      'is_dark_mode', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'CHECK ("is_dark_mode" IN (0, 1))'),
+      defaultValue: const Constant(false));
+  @override
+  List<GeneratedColumn> get $columns => [id, isDarkMode];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'theme_preferences_table';
+  @override
+  VerificationContext validateIntegrity(
+      Insertable<ThemePreferencesTableData> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('is_dark_mode')) {
+      context.handle(
+          _isDarkModeMeta,
+          isDarkMode.isAcceptableOrUnknown(
+              data['is_dark_mode']!, _isDarkModeMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  ThemePreferencesTableData map(Map<String, dynamic> data,
+      {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ThemePreferencesTableData(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      isDarkMode: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}is_dark_mode'])!,
+    );
+  }
+
+  @override
+  $ThemePreferencesTableTable createAlias(String alias) {
+    return $ThemePreferencesTableTable(attachedDatabase, alias);
+  }
+}
+
+class ThemePreferencesTableData extends DataClass
+    implements Insertable<ThemePreferencesTableData> {
+  final int id;
+  final bool isDarkMode;
+  const ThemePreferencesTableData({required this.id, required this.isDarkMode});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['is_dark_mode'] = Variable<bool>(isDarkMode);
+    return map;
+  }
+
+  ThemePreferencesTableCompanion toCompanion(bool nullToAbsent) {
+    return ThemePreferencesTableCompanion(
+      id: Value(id),
+      isDarkMode: Value(isDarkMode),
+    );
+  }
+
+  factory ThemePreferencesTableData.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ThemePreferencesTableData(
+      id: serializer.fromJson<int>(json['id']),
+      isDarkMode: serializer.fromJson<bool>(json['isDarkMode']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'isDarkMode': serializer.toJson<bool>(isDarkMode),
+    };
+  }
+
+  ThemePreferencesTableData copyWith({int? id, bool? isDarkMode}) =>
+      ThemePreferencesTableData(
+        id: id ?? this.id,
+        isDarkMode: isDarkMode ?? this.isDarkMode,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('ThemePreferencesTableData(')
+          ..write('id: $id, ')
+          ..write('isDarkMode: $isDarkMode')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, isDarkMode);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ThemePreferencesTableData &&
+          other.id == this.id &&
+          other.isDarkMode == this.isDarkMode);
+}
+
+class ThemePreferencesTableCompanion
+    extends UpdateCompanion<ThemePreferencesTableData> {
+  final Value<int> id;
+  final Value<bool> isDarkMode;
+  const ThemePreferencesTableCompanion({
+    this.id = const Value.absent(),
+    this.isDarkMode = const Value.absent(),
+  });
+  ThemePreferencesTableCompanion.insert({
+    this.id = const Value.absent(),
+    this.isDarkMode = const Value.absent(),
+  });
+  static Insertable<ThemePreferencesTableData> custom({
+    Expression<int>? id,
+    Expression<bool>? isDarkMode,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (isDarkMode != null) 'is_dark_mode': isDarkMode,
+    });
+  }
+
+  ThemePreferencesTableCompanion copyWith(
+      {Value<int>? id, Value<bool>? isDarkMode}) {
+    return ThemePreferencesTableCompanion(
+      id: id ?? this.id,
+      isDarkMode: isDarkMode ?? this.isDarkMode,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (isDarkMode.present) {
+      map['is_dark_mode'] = Variable<bool>(isDarkMode.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ThemePreferencesTableCompanion(')
+          ..write('id: $id, ')
+          ..write('isDarkMode: $isDarkMode')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   _$AppDatabaseManager get managers => _$AppDatabaseManager(this);
   late final $MoviesTableTable moviesTable = $MoviesTableTable(this);
+  late final $ThemePreferencesTableTable themePreferencesTable =
+      $ThemePreferencesTableTable(this);
   late final MovieDao movieDao = MovieDao(this as AppDatabase);
+  late final ThemePreferencesDao themePreferencesDao =
+      ThemePreferencesDao(this as AppDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities => [moviesTable];
+  List<DatabaseSchemaEntity> get allSchemaEntities =>
+      [moviesTable, themePreferencesTable];
 }
 
 typedef $$MoviesTableTableInsertCompanionBuilder = MoviesTableCompanion
@@ -507,9 +695,102 @@ class $$MoviesTableTableOrderingComposer
           ColumnOrderings(column, joinBuilders: joinBuilders));
 }
 
+typedef $$ThemePreferencesTableTableInsertCompanionBuilder
+    = ThemePreferencesTableCompanion Function({
+  Value<int> id,
+  Value<bool> isDarkMode,
+});
+typedef $$ThemePreferencesTableTableUpdateCompanionBuilder
+    = ThemePreferencesTableCompanion Function({
+  Value<int> id,
+  Value<bool> isDarkMode,
+});
+
+class $$ThemePreferencesTableTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $ThemePreferencesTableTable,
+    ThemePreferencesTableData,
+    $$ThemePreferencesTableTableFilterComposer,
+    $$ThemePreferencesTableTableOrderingComposer,
+    $$ThemePreferencesTableTableProcessedTableManager,
+    $$ThemePreferencesTableTableInsertCompanionBuilder,
+    $$ThemePreferencesTableTableUpdateCompanionBuilder> {
+  $$ThemePreferencesTableTableTableManager(
+      _$AppDatabase db, $ThemePreferencesTableTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer: $$ThemePreferencesTableTableFilterComposer(
+              ComposerState(db, table)),
+          orderingComposer: $$ThemePreferencesTableTableOrderingComposer(
+              ComposerState(db, table)),
+          getChildManagerBuilder: (p) =>
+              $$ThemePreferencesTableTableProcessedTableManager(p),
+          getUpdateCompanionBuilder: ({
+            Value<int> id = const Value.absent(),
+            Value<bool> isDarkMode = const Value.absent(),
+          }) =>
+              ThemePreferencesTableCompanion(
+            id: id,
+            isDarkMode: isDarkMode,
+          ),
+          getInsertCompanionBuilder: ({
+            Value<int> id = const Value.absent(),
+            Value<bool> isDarkMode = const Value.absent(),
+          }) =>
+              ThemePreferencesTableCompanion.insert(
+            id: id,
+            isDarkMode: isDarkMode,
+          ),
+        ));
+}
+
+class $$ThemePreferencesTableTableProcessedTableManager
+    extends ProcessedTableManager<
+        _$AppDatabase,
+        $ThemePreferencesTableTable,
+        ThemePreferencesTableData,
+        $$ThemePreferencesTableTableFilterComposer,
+        $$ThemePreferencesTableTableOrderingComposer,
+        $$ThemePreferencesTableTableProcessedTableManager,
+        $$ThemePreferencesTableTableInsertCompanionBuilder,
+        $$ThemePreferencesTableTableUpdateCompanionBuilder> {
+  $$ThemePreferencesTableTableProcessedTableManager(super.$state);
+}
+
+class $$ThemePreferencesTableTableFilterComposer
+    extends FilterComposer<_$AppDatabase, $ThemePreferencesTableTable> {
+  $$ThemePreferencesTableTableFilterComposer(super.$state);
+  ColumnFilters<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<bool> get isDarkMode => $state.composableBuilder(
+      column: $state.table.isDarkMode,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+}
+
+class $$ThemePreferencesTableTableOrderingComposer
+    extends OrderingComposer<_$AppDatabase, $ThemePreferencesTableTable> {
+  $$ThemePreferencesTableTableOrderingComposer(super.$state);
+  ColumnOrderings<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<bool> get isDarkMode => $state.composableBuilder(
+      column: $state.table.isDarkMode,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+}
+
 class _$AppDatabaseManager {
   final _$AppDatabase _db;
   _$AppDatabaseManager(this._db);
   $$MoviesTableTableTableManager get moviesTable =>
       $$MoviesTableTableTableManager(_db, _db.moviesTable);
+  $$ThemePreferencesTableTableTableManager get themePreferencesTable =>
+      $$ThemePreferencesTableTableTableManager(_db, _db.themePreferencesTable);
 }

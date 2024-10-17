@@ -8,12 +8,12 @@ import '../repository/movie_repository.dart';
 
 @LazySingleton()
 class RetrieveGenres implements UseCase<List<Genre>, NoParams> {
-  final MovieRepository movieRepository;
+  final MovieRepository _movieRepository;
 
-  RetrieveGenres(this.movieRepository);
+  RetrieveGenres(this._movieRepository);
 
   @override
   Future<Either<Failure, List<Genre>>> call(NoParams params) async {
-    return await movieRepository.getGenres();
+    return await _movieRepository.getGenres();
   }
 }

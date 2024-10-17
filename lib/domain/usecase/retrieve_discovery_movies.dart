@@ -10,14 +10,14 @@ import '../repository/movie_repository.dart';
 @LazySingleton()
 class RetrieveDiscoveryMovies
     implements UseCase<MoviesResponse, DiscoveryMoviesParams> {
-  final MovieRepository movieRepository;
+  final MovieRepository _movieRepository;
 
-  RetrieveDiscoveryMovies(this.movieRepository);
+  RetrieveDiscoveryMovies(this._movieRepository);
 
   @override
   Future<Either<Failure, MoviesResponse>> call(
       DiscoveryMoviesParams params) async {
-    return await movieRepository.getDiscoverMovies(
+    return await _movieRepository.getDiscoverMovies(
       page: params.page,
       genreId: params.genreId,
       sortBy: params.sortBy,

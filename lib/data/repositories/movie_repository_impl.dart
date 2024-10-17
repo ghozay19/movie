@@ -12,12 +12,12 @@ import '../mapper/movie_mapper.dart';
 
 @LazySingleton(as: MovieRepository)
 class MovieRepositoriesImpl implements MovieRepository {
-  final MovieDatasource remoteDatasource;
-  MovieRepositoriesImpl(this.remoteDatasource);
+  final MovieDatasource _remoteDatasource;
+  MovieRepositoriesImpl(this._remoteDatasource);
 
   @override
   Future<Either<Failure, List<Genre>>> getGenres() async {
-    final result = await remoteDatasource.getGenres();
+    final result = await _remoteDatasource.getGenres();
     return result.fold(
       (failure) {
         return Left(failure);
@@ -32,7 +32,7 @@ class MovieRepositoriesImpl implements MovieRepository {
   @override
   Future<Either<Failure, MoviesResponse>> getDiscoverMovies(
       {required int page, int? genreId, MoviesSortBy? sortBy}) async {
-    final result = await remoteDatasource.getDiscoverMovies(
+    final result = await _remoteDatasource.getDiscoverMovies(
       page: page,
       genreId: genreId,
       sortBy: sortBy,

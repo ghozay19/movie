@@ -7,12 +7,12 @@ import '../entities/movie.dart';
 
 @LazySingleton()
 class StoreMovieToLocal implements UseCase<int, Movie> {
-  final MovieLocalRepository movieLocalRepository;
+  final MovieLocalRepository _movieLocalRepository;
 
-  StoreMovieToLocal(this.movieLocalRepository);
+  StoreMovieToLocal(this._movieLocalRepository);
 
   @override
   Future<Either<Failure, int>> call(Movie params) async {
-    return await movieLocalRepository.insertMovie(params);
+    return await _movieLocalRepository.insertMovie(params);
   }
 }
