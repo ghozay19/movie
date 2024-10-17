@@ -1,5 +1,6 @@
 
 # Movies App
+Flutter + MobX
 
 # Directory Structure
 
