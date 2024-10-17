@@ -7,7 +7,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:movies/core/constant/api_endpoints.dart';
 import 'package:movies/domain/entities/movie.dart';
 import '../../../core/constant/app_sizes.dart';
-import '../../movie_image_network.dart';
+import '../../widget/movie_image_network.dart';
 import '../store/detail_movie_store.dart';
 
 @RoutePage()

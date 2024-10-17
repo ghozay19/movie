@@ -7,7 +7,7 @@ import 'package:mobx/mobx.dart';
 import 'package:movies/core/constant/api_endpoints.dart';
 import 'package:movies/presentation/bookmark/store/bookmark_store.dart';
 
-import '../../movie_image_network.dart';
+import '../../widget/movie_image_network.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:movies/presentation/router/app_router.dart';
 

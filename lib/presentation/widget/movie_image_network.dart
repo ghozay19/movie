@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
-import '../core/constant/assets.dart';
+import '../../core/constant/assets.dart';
 
 class MovieImageNetwork extends StatelessWidget {
   final String imageUrl;

@@ -11,7 +11,7 @@ import 'package:movies/presentation/theme/theme_store.dart';
 import '../../../core/constant/api_endpoints.dart';
 import '../../../core/i10n/l10n.dart';
 import '../../../main.dart';
-import '../../movie_image_network.dart';
+import '../../widget/movie_image_network.dart';
 import '../store/home_store.dart';
 
 @RoutePage()
