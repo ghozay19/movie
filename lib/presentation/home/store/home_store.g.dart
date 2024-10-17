@@ -103,6 +103,22 @@ mixin _$HomeStore on _HomeStore, Store {
     });
   }
 
+  late final _$listSearchMoviesAtom =
+      Atom(name: '_HomeStore.listSearchMovies', context: context);
+
+  @override
+  ObservableList<Movie> get listSearchMovies {
+    _$listSearchMoviesAtom.reportRead();
+    return super.listSearchMovies;
+  }
+
+  @override
+  set listSearchMovies(ObservableList<Movie> value) {
+    _$listSearchMoviesAtom.reportWrite(value, super.listSearchMovies, () {
+      super.listSearchMovies = value;
+    });
+  }
+
   late final _$discoverMoviesFutureAtom =
       Atom(name: '_HomeStore.discoverMoviesFuture', context: context);
 
@@ -117,6 +133,22 @@ mixin _$HomeStore on _HomeStore, Store {
     _$discoverMoviesFutureAtom.reportWrite(value, super.discoverMoviesFuture,
         () {
       super.discoverMoviesFuture = value;
+    });
+  }
+
+  late final _$searchMoviesFutureAtom =
+      Atom(name: '_HomeStore.searchMoviesFuture', context: context);
+
+  @override
+  ObservableFuture<List<Movie>>? get searchMoviesFuture {
+    _$searchMoviesFutureAtom.reportRead();
+    return super.searchMoviesFuture;
+  }
+
+  @override
+  set searchMoviesFuture(ObservableFuture<List<Movie>>? value) {
+    _$searchMoviesFutureAtom.reportWrite(value, super.searchMoviesFuture, () {
+      super.searchMoviesFuture = value;
     });
   }
 
@@ -137,8 +169,27 @@ mixin _$HomeStore on _HomeStore, Store {
         .run(() => super.fetchDiscoveryMovies());
   }
 
+  late final _$searchMoviesAsyncAction =
+      AsyncAction('_HomeStore.searchMovies', context: context);
+
+  @override
+  Future<void> searchMovies() {
+    return _$searchMoviesAsyncAction.run(() => super.searchMovies());
+  }
+
   late final _$_HomeStoreActionController =
       ActionController(name: '_HomeStore', context: context);
+
+  @override
+  void setSearchQuery(String query) {
+    final _$actionInfo = _$_HomeStoreActionController.startAction(
+        name: '_HomeStore.setSearchQuery');
+    try {
+      return super.setSearchQuery(query);
+    } finally {
+      _$_HomeStoreActionController.endAction(_$actionInfo);
+    }
+  }
 
   @override
   void setSelectedGenre(Genre? genre) {
@@ -171,7 +222,9 @@ genresFuture: ${genresFuture},
 selectedGenre: ${selectedGenre},
 sortBy: ${sortBy},
 discoverMovies: ${discoverMovies},
-discoverMoviesFuture: ${discoverMoviesFuture}
+listSearchMovies: ${listSearchMovies},
+discoverMoviesFuture: ${discoverMoviesFuture},
+searchMoviesFuture: ${searchMoviesFuture}
     ''';
   }
 }

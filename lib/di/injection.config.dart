@@ -96,6 +96,7 @@ extension GetItInjectableX on _i1.GetIt {
     gh.factory<_i25.HomeStore>(() => _i25.HomeStore(
           gh<_i18.RetrieveGenres>(),
           gh<_i17.RetrieveDiscoveryMovies>(),
+          gh<_i20.SearchMovie>(),
         ));
     gh.lazySingleton<_i26.ThemeDatasource>(
         () => _i27.ThemeDatasourceImpl(gh<_i22.ThemePreferencesDao>()));

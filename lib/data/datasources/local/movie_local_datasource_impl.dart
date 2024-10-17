@@ -48,7 +48,7 @@ class MovieLocalDataSourceImpl implements MovieLocalDatasource {
     try {
       final movieData = await _movieDao.getMovieById(id);
       if (movieData == null) {
-        return Right(None()); // Use Option type to signify no movie found
+        return const Right(None());
       }
       final movie = Movie(
         id: movieData.id,

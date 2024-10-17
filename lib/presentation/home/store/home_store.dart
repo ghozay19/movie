@@ -1,10 +1,14 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 
 import 'package:movies/core/constant/movies_sort_enum.dart';
 import 'package:movies/domain/usecase/retrieve_genres.dart';
+import 'package:movies/domain/usecase/search_movie.dart';
 import 'package:movies/domain/usecase/usecase.dart';
+import 'package:rxdart/rxdart.dart';
 
 import "../../../domain/entities/movie.dart";
 import '../../../domain/entities/genre.dart';
@@ -22,12 +26,43 @@ abstract class _HomeStore with Store {
   _HomeStore(
     this.retrieveGenres,
     this.retrieveDiscoveryMovies,
-  );
+    this.searchMovie,
+  ) {
+    _searchQuery.stream
+        .debounceTime(Duration(milliseconds: debounceDuration))
+        .listen((query) async {
+      if (query.isNotEmpty) {
+        final result = await searchMovie
+            .call(SearchMovieParams(page: currentSearchPage, query: query));
+        result.fold(
+          (failure) {
+            debugPrint('Error occurred: $failure');
+            errorMessage = failure.toString();
+          },
+          (movies) {
+            listSearchMovies.addAll(movies.results);
+
+            searchMoviesFuture = ObservableFuture.value(listSearchMovies);
+
+            currentDiscoveryPage++;
+          },
+        );
+      }
+    });
+  }
+
+  final SearchMovie searchMovie;
+  final BehaviorSubject<String> _searchQuery = BehaviorSubject<String>();
+  String get searchQuery => _searchQuery.value;
+
+  @action
+  void setSearchQuery(String query) {
+    _searchQuery.add(query);
+  }
 
   @observable
   String? errorMessage;
 
-  // Observable list to hold genres
   @observable
   ObservableList<Genre> genres = ObservableList<Genre>();
 
@@ -39,6 +74,22 @@ abstract class _HomeStore with Store {
 
   @observable
   MoviesSortBy? sortBy;
+
+  @observable
+  ObservableList<Movie> discoverMovies = ObservableList<Movie>();
+
+  @observable
+  ObservableList<Movie> listSearchMovies = ObservableList<Movie>();
+
+  @observable
+  ObservableFuture<List<Movie>>? discoverMoviesFuture;
+
+  @observable
+  ObservableFuture<List<Movie>>? searchMoviesFuture;
+
+  int currentDiscoveryPage = 1;
+  int currentSearchPage = 1;
+  final debounceDuration = 300;
 
   @action
   void setSelectedGenre(Genre? genre) {
@@ -84,12 +135,6 @@ abstract class _HomeStore with Store {
     });
   }
 
-  @observable
-  ObservableList<Movie> discoverMovies = ObservableList<Movie>();
-  @observable
-  ObservableFuture<List<Movie>>? discoverMoviesFuture;
-
-  int currentDiscoveryPage = 1;
   @action
   Future<void> fetchDiscoveryMovies() async {
     if (discoverMoviesFuture?.status == FutureStatus.pending) {
@@ -114,6 +159,31 @@ abstract class _HomeStore with Store {
         discoverMoviesFuture = ObservableFuture.value(discoverMovies);
 
         currentDiscoveryPage++;
+      },
+    );
+  }
+
+  @action
+  Future<void> searchMovies() async {
+    if (searchMoviesFuture?.status == FutureStatus.pending) {
+      return;
+    }
+
+    final result = await searchMovie.call(
+      SearchMovieParams(page: currentSearchPage, query: _searchQuery.value),
+    );
+    result.fold(
+      (failure) {
+        debugPrint('Error occurred: $failure');
+        errorMessage = failure.toString();
+      },
+      (movies) {
+        if (currentSearchPage == 1) {
+          listSearchMovies.clear();
+        }
+        listSearchMovies.addAll(movies.results);
+        searchMoviesFuture = ObservableFuture.value(listSearchMovies);
+        currentSearchPage++;
       },
     );
   }

@@ -1,4 +1,5 @@
-// ignore: depend_on_referenced_packages
+// ignore_for_file: library_private_types_in_public_api, depend_on_referenced_packages
+
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -65,18 +66,17 @@ class _HomePageState extends State<HomePage> {
         body: _buildBody(context),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            // if (controller.isSearchMode.value) {
-            //   controller.isSearchMode.value = false;
-            //   return;
-            // }
-            // _showSearchDialog(context);
+            if (homeStore.listSearchMovies.isNotEmpty) {
+              homeStore.listSearchMovies.clear();
+              return;
+            }
+            _showSearchDialog(context);
           },
           tooltip: 'Search',
-          child: const Visibility(
-            // visible: controller.isSearchMode.value,
-            visible: false,
-            replacement: Icon(Icons.search),
-            child: Icon(Icons.close),
+          child: Visibility(
+            visible: homeStore.listSearchMovies.isNotEmpty,
+            replacement: const Icon(Icons.search),
+            child: const Icon(Icons.close),
           ),
         ),
       );
@@ -84,6 +84,120 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildBody(BuildContext context) {
+    return Observer(builder: (_) {
+      return Visibility(
+        visible: homeStore.listSearchMovies.isNotEmpty,
+        replacement: _buildMovieList(context),
+        child: _buildSearchMovieList(context),
+      );
+    });
+  }
+
+  PopupMenuItem<MoviesSortBy> _buildPopupMenuItem(
+      MoviesSortBy value, MoviesSortBy? currentSortBy, String title) {
+    return PopupMenuItem<MoviesSortBy>(
+      value: value,
+      child: Text(
+        title,
+        style: TextStyle(
+          color: currentSortBy == value ? Colors.green : null,
+        ),
+      ),
+    );
+  }
+
+  void _showSearchDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        String searchQuery = '';
+        return AlertDialog(
+          title: const Text('Search Movies'),
+          content: TextField(
+            onChanged: (value) {
+              searchQuery = value;
+            },
+            decoration: const InputDecoration(hintText: 'Enter movie name'),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                // Tutup dialog saat pencarian dilakukan
+                Navigator.of(context).pop();
+                // Navigasi ke halaman hasil pencarian
+                homeStore.setSearchQuery(searchQuery);
+              },
+              child: const Text('Search'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Tutup dialog tanpa pencarian
+              },
+              child: const Text('Cancel'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildSearchMovieList(BuildContext context) {
+    return Observer(
+      builder: (_) {
+        final upComing = homeStore.discoverMovies;
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('${I10n.current.showing_result_of}${homeStore.searchQuery}'),
+            Expanded(
+              child: NotificationListener<ScrollNotification>(
+                onNotification: (scrollInfo) {
+                  if (scrollInfo.metrics.pixels ==
+                      scrollInfo.metrics.maxScrollExtent) {
+                    homeStore.searchMovies();
+                  }
+                  return false;
+                },
+                child: GridView.builder(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3,
+                    childAspectRatio: 0.7,
+                  ),
+                  itemCount: upComing.length,
+                  itemBuilder: (context, index) {
+                    return InkWell(
+                      onTap: () {
+                        final movieId = upComing[index];
+
+                        AutoRouter.of(context)
+                            .push(MovieDetailRoute(detailMovie: movieId));
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(2.0),
+                        child: Card(
+                          child: MovieImageNetwork(
+                            imageUrl:
+                                '${ApiEndpoints.baseImageUrl}${upComing[index].posterPath ?? ''}',
+                            fit: BoxFit.cover,
+                            width: double.infinity,
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(8),
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildMovieList(BuildContext context) {
     return Column(
       children: [
         Observer(
@@ -230,19 +344,6 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ],
-    );
-  }
-
-  PopupMenuItem<MoviesSortBy> _buildPopupMenuItem(
-      MoviesSortBy value, MoviesSortBy? currentSortBy, String title) {
-    return PopupMenuItem<MoviesSortBy>(
-      value: value,
-      child: Text(
-        title,
-        style: TextStyle(
-          color: currentSortBy == value ? Colors.green : null,
-        ),
-      ),
     );
   }
 }

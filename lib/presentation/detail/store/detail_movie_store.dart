@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 import 'package:movies/domain/usecase/retrieve_local_movie.dart';

@@ -89,6 +89,16 @@ class I10n {
       args: [],
     );
   }
+
+  /// `Showing Result Of`
+  String get showing_result_of {
+    return Intl.message(
+      'Showing Result Of',
+      name: 'showing_result_of',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<I10n> {

@@ -1,7 +1,8 @@
+// ignore_for_file: depend_on_referenced_packages, library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:get_it/get_it.dart';
-// ignore: depend_on_referenced_packages
 import 'package:auto_route/auto_route.dart';
 import 'package:movies/core/constant/api_endpoints.dart';
 import 'package:movies/domain/entities/movie.dart';
@@ -13,8 +14,7 @@ import '../store/detail_movie_store.dart';
 class MovieDetailPage extends StatefulWidget {
   final Movie detailMovie;
 
-  const MovieDetailPage({Key? key, required this.detailMovie})
-      : super(key: key);
+  const MovieDetailPage({super.key, required this.detailMovie});
 
   @override
   _MovieDetailPageState createState() => _MovieDetailPageState();
