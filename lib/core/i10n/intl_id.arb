@@ -4,5 +4,10 @@
   "popularity_asc":"Populer: Rendah-Tinggi",
   "release_date_asc":"Tanggal Rilis: Terlama",
   "release_date_desc":"Tanggal Rilis: Terbaru",
-  "showing_result_of:"Menampilkan hasil dari "
+  "showing_result_of":"Menampilkan hasil dari ",
+  "search_movies": "Cari Film",
+  "search":"Cari",
+  "cancel":"Batalkan",
+  "movies":"Film",
+  "enter_movie_name":"Masukkan judul film"
 }

@@ -32,21 +32,23 @@ abstract class _HomeStore with Store {
         .debounceTime(Duration(milliseconds: debounceDuration))
         .listen((query) async {
       if (query.isNotEmpty) {
-        final result = await searchMovie
-            .call(SearchMovieParams(page: currentSearchPage, query: query));
-        result.fold(
-          (failure) {
-            debugPrint('Error occurred: $failure');
-            errorMessage = failure.toString();
-          },
-          (movies) {
-            listSearchMovies.addAll(movies.results);
+        if (!hasReachmax) {
+          final result = await searchMovie
+              .call(SearchMovieParams(page: currentSearchPage, query: query));
+          result.fold(
+            (failure) {
+              debugPrint('Error occurred: $failure');
+              errorMessage = failure.toString();
+            },
+            (movies) {
+              listSearchMovies.addAll(movies.results);
 
-            searchMoviesFuture = ObservableFuture.value(listSearchMovies);
+              searchMoviesFuture = ObservableFuture.value(listSearchMovies);
 
-            currentDiscoveryPage++;
-          },
-        );
+              currentSearchPage++;
+            },
+          );
+        }
       }
     });
   }
@@ -90,6 +92,7 @@ abstract class _HomeStore with Store {
   int currentDiscoveryPage = 1;
   int currentSearchPage = 1;
   final debounceDuration = 300;
+  bool hasReachmax = false;
 
   @action
   void setSelectedGenre(Genre? genre) {
@@ -169,22 +172,33 @@ abstract class _HomeStore with Store {
       return;
     }
 
-    final result = await searchMovie.call(
-      SearchMovieParams(page: currentSearchPage, query: _searchQuery.value),
-    );
-    result.fold(
-      (failure) {
-        debugPrint('Error occurred: $failure');
-        errorMessage = failure.toString();
-      },
-      (movies) {
-        if (currentSearchPage == 1) {
-          listSearchMovies.clear();
-        }
-        listSearchMovies.addAll(movies.results);
-        searchMoviesFuture = ObservableFuture.value(listSearchMovies);
-        currentSearchPage++;
-      },
-    );
+    if (!hasReachmax) {
+      final result = await searchMovie.call(
+        SearchMovieParams(page: currentSearchPage, query: _searchQuery.value),
+      );
+      result.fold(
+        (failure) {
+          debugPrint('Error occurred: $failure');
+          errorMessage = failure.toString();
+        },
+        (movies) {
+          if (currentSearchPage >= movies.totalPages) {
+            hasReachmax = true;
+            return;
+          }
+
+          final tempResult = listSearchMovies;
+
+          for (final newMovie in movies.results) {
+            if (!tempResult.any((movie) => movie.id == newMovie.id)) {
+              tempResult.add(newMovie);
+            }
+          }
+
+          searchMoviesFuture = ObservableFuture.value(tempResult);
+          currentSearchPage++;
+        },
+      );
+    }
   }
 }

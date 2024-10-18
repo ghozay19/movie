@@ -54,12 +54,20 @@ class MyAppState extends State<MyApp> {
                       bodyMedium: TextStyle(color: Colors.white),
                       headlineMedium: TextStyle(color: Colors.white),
                     ),
+                    floatingActionButtonTheme:
+                        const FloatingActionButtonThemeData(
+                      backgroundColor: Colors.green,
+                    ),
                   )
                 : ThemeData.light().copyWith(
                     textTheme: const TextTheme(
                       bodyLarge: TextStyle(color: Colors.black),
                       bodyMedium: TextStyle(color: Colors.black),
                       headlineMedium: TextStyle(color: Colors.black),
+                    ),
+                    floatingActionButtonTheme:
+                        const FloatingActionButtonThemeData(
+                      backgroundColor: Colors.green,
                     ),
                   ),
             localizationsDelegates: const [

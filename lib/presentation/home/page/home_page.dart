@@ -4,6 +4,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:get_it/get_it.dart';
+import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
 import 'package:mobx/mobx.dart';
 import 'package:movies/core/constant/movies_sort_enum.dart';
 import 'package:movies/presentation/router/app_router.dart';
@@ -44,7 +45,7 @@ class _HomePageState extends State<HomePage> {
     return Observer(builder: (_) {
       return Scaffold(
         appBar: AppBar(
-          title: const Text("Movies"),
+          title: Text(I10n.current.movies),
           actions: [
             IconButton(
               icon: Icon(
@@ -68,14 +69,18 @@ class _HomePageState extends State<HomePage> {
           onPressed: () {
             if (homeStore.listSearchMovies.isNotEmpty) {
               homeStore.listSearchMovies.clear();
+              homeStore.currentSearchPage = 1;
               return;
             }
             _showSearchDialog(context);
           },
-          tooltip: 'Search',
+          tooltip: I10n.current.search,
           child: Visibility(
             visible: homeStore.listSearchMovies.isNotEmpty,
-            replacement: const Icon(Icons.search),
+            replacement: const Icon(
+              Icons.search,
+              color: Colors.white,
+            ),
             child: const Icon(Icons.close),
           ),
         ),
@@ -95,13 +100,23 @@ class _HomePageState extends State<HomePage> {
 
   PopupMenuItem<MoviesSortBy> _buildPopupMenuItem(
       MoviesSortBy value, MoviesSortBy? currentSortBy, String title) {
+    final isDarkMode = themeStore.themeMode == ThemeMode.dark;
+
     return PopupMenuItem<MoviesSortBy>(
       value: value,
-      child: Text(
-        title,
-        style: TextStyle(
-          color: currentSortBy == value ? Colors.green : null,
-        ),
+      child: Observer(
+        builder: (_) {
+          return Text(
+            title,
+            style: TextStyle(
+              color: currentSortBy == value
+                  ? Colors.green
+                  : isDarkMode
+                      ? Colors.white
+                      : Colors.black,
+            ),
+          );
+        },
       ),
     );
   }
@@ -112,28 +127,29 @@ class _HomePageState extends State<HomePage> {
       builder: (context) {
         String searchQuery = '';
         return AlertDialog(
-          title: const Text('Search Movies'),
+          title: Text(I10n.current.search_movies,
+              style: Theme.of(context).textTheme.bodyLarge),
           content: TextField(
             onChanged: (value) {
               searchQuery = value;
             },
-            decoration: const InputDecoration(hintText: 'Enter movie name'),
+            decoration:
+                InputDecoration(hintText: I10n.current.enter_movie_name),
           ),
           actions: [
             TextButton(
               onPressed: () {
-                // Tutup dialog saat pencarian dilakukan
                 Navigator.of(context).pop();
-                // Navigasi ke halaman hasil pencarian
+
                 homeStore.setSearchQuery(searchQuery);
               },
-              child: const Text('Search'),
+              child: Text(I10n.current.search),
             ),
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // Tutup dialog tanpa pencarian
+                Navigator.of(context).pop();
               },
-              child: const Text('Cancel'),
+              child: Text(I10n.current.cancel),
             ),
           ],
         );
@@ -144,30 +160,29 @@ class _HomePageState extends State<HomePage> {
   Widget _buildSearchMovieList(BuildContext context) {
     return Observer(
       builder: (_) {
-        final upComing = homeStore.discoverMovies;
+        final resultMovie = homeStore.listSearchMovies;
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.max,
           children: [
-            Text('${I10n.current.showing_result_of}${homeStore.searchQuery}'),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                  '${I10n.current.showing_result_of} ${homeStore.searchQuery.toUpperCase()}'),
+            ),
             Expanded(
-              child: NotificationListener<ScrollNotification>(
-                onNotification: (scrollInfo) {
-                  if (scrollInfo.metrics.pixels ==
-                      scrollInfo.metrics.maxScrollExtent) {
-                    homeStore.searchMovies();
-                  }
-                  return false;
-                },
+              child: LazyLoadScrollView(
+                onEndOfPage: () => homeStore.searchMovies(),
                 child: GridView.builder(
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 3,
                     childAspectRatio: 0.7,
                   ),
-                  itemCount: upComing.length,
+                  itemCount: resultMovie.length,
                   itemBuilder: (context, index) {
                     return InkWell(
                       onTap: () {
-                        final movieId = upComing[index];
+                        final movieId = resultMovie[index];
 
                         AutoRouter.of(context)
                             .push(MovieDetailRoute(detailMovie: movieId));
@@ -177,7 +192,7 @@ class _HomePageState extends State<HomePage> {
                         child: Card(
                           child: MovieImageNetwork(
                             imageUrl:
-                                '${ApiEndpoints.baseImageUrl}${upComing[index].posterPath ?? ''}',
+                                '${ApiEndpoints.baseImageUrl}${resultMovie[index].posterPath ?? ''}',
                             fit: BoxFit.cover,
                             width: double.infinity,
                             borderRadius: const BorderRadius.all(
@@ -203,7 +218,6 @@ class _HomePageState extends State<HomePage> {
         Observer(
           builder: (_) {
             final selectedGenre = homeStore.selectedGenre;
-
             return SizedBox(
               height: 50,
               child: Row(
@@ -216,8 +230,9 @@ class _HomePageState extends State<HomePage> {
                         border: Border.all(
                           color: Theme.of(context).colorScheme.outline,
                         ),
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(10)),
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(10),
+                        ),
                       ),
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 2),
@@ -266,30 +281,26 @@ class _HomePageState extends State<HomePage> {
                         return Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: FilterChip(
-                            showCheckmark: false,
-                            shape: const StadiumBorder(
-                                side: BorderSide(color: Colors.black)),
+                            showCheckmark: true,
+                            shape: StadiumBorder(
+                              side: BorderSide(
+                                color: Theme.of(context).colorScheme.outline,
+                              ),
+                            ),
                             label: Text(
                               genre.name,
-                              style: TextStyle(
-                                color: selectedGenre == genre
-                                    ? Colors.white
-                                    : Colors.black,
-                              ),
+                              style: Theme.of(context).textTheme.bodyMedium,
                             ),
                             selected: selectedGenre == genre,
                             onSelected: (isSelected) {
                               homeStore
                                   .setSelectedGenre(isSelected ? genre : null);
                             },
-                            selectedColor: Colors.green,
-                            backgroundColor: Colors.grey[300],
-                            checkmarkColor: Colors.white,
                           ),
                         );
                       },
                     ),
-                  ),
+                  )
                 ],
               ),
             );
@@ -300,14 +311,8 @@ class _HomePageState extends State<HomePage> {
           child: Observer(
             builder: (_) {
               final upComing = homeStore.discoverMovies;
-              return NotificationListener<ScrollNotification>(
-                onNotification: (scrollInfo) {
-                  if (scrollInfo.metrics.pixels ==
-                      scrollInfo.metrics.maxScrollExtent) {
-                    homeStore.fetchDiscoveryMovies();
-                  }
-                  return false;
-                },
+              return LazyLoadScrollView(
+                onEndOfPage: () => homeStore.fetchDiscoveryMovies(),
                 child: GridView.builder(
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 3,

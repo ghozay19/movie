@@ -22,6 +22,10 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+        "cancel": MessageLookupByLibrary.simpleMessage("Batalkan"),
+        "enter_movie_name":
+            MessageLookupByLibrary.simpleMessage("Masukkan judul film"),
+        "movies": MessageLookupByLibrary.simpleMessage("Film"),
         "popularity_asc":
             MessageLookupByLibrary.simpleMessage("Populer: Rendah-Tinggi"),
         "popularity_desc":
@@ -29,6 +33,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "release_date_asc":
             MessageLookupByLibrary.simpleMessage("Tanggal Rilis: Terlama"),
         "release_date_desc":
-            MessageLookupByLibrary.simpleMessage("Tanggal Rilis: Terbaru")
+            MessageLookupByLibrary.simpleMessage("Tanggal Rilis: Terbaru"),
+        "search": MessageLookupByLibrary.simpleMessage("Cari"),
+        "search_movies": MessageLookupByLibrary.simpleMessage("Cari Film"),
+        "showing_result_of":
+            MessageLookupByLibrary.simpleMessage("Menampilkan hasil dari ")
       };
 }

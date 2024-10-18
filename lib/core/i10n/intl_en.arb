@@ -3,6 +3,11 @@
   "popularity_asc":"Popularity: Low-High",
   "release_date_asc":"Release Date: Oldest",
   "release_date_desc":"Release Date: Newest",
-  "showing_result_of": "Showing Result Of"
+  "showing_result_of": "Showing Result Of",
+  "search_movies": "Search Movies",
+  "search":"Search",
+  "cancel":"Cancel",
+  "movies":"Movies",
+  "enter_movie_name": "Enter movie name"
   
 }

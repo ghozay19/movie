@@ -22,6 +22,10 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+        "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
+        "enter_movie_name":
+            MessageLookupByLibrary.simpleMessage("Enter movie name"),
+        "movies": MessageLookupByLibrary.simpleMessage("Movies"),
         "popularity_asc":
             MessageLookupByLibrary.simpleMessage("Popularity: Low-High"),
         "popularity_desc":
@@ -29,6 +33,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "release_date_asc":
             MessageLookupByLibrary.simpleMessage("Release Date: Oldest"),
         "release_date_desc":
-            MessageLookupByLibrary.simpleMessage("Release Date: Newest")
+            MessageLookupByLibrary.simpleMessage("Release Date: Newest"),
+        "search": MessageLookupByLibrary.simpleMessage("Search"),
+        "search_movies": MessageLookupByLibrary.simpleMessage("Search Movies"),
+        "showing_result_of":
+            MessageLookupByLibrary.simpleMessage("Showing Result Of")
       };
 }

@@ -99,6 +99,56 @@ class I10n {
       args: [],
     );
   }
+
+  /// `Search Movies`
+  String get search_movies {
+    return Intl.message(
+      'Search Movies',
+      name: 'search_movies',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Search`
+  String get search {
+    return Intl.message(
+      'Search',
+      name: 'search',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cancel`
+  String get cancel {
+    return Intl.message(
+      'Cancel',
+      name: 'cancel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Movies`
+  String get movies {
+    return Intl.message(
+      'Movies',
+      name: 'movies',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter movie name`
+  String get enter_movie_name {
+    return Intl.message(
+      'Enter movie name',
+      name: 'enter_movie_name',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<I10n> {
