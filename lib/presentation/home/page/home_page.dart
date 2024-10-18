@@ -61,7 +61,7 @@ class _HomePageState extends State<HomePage> {
                 themeStore.toggleTheme(!isDarkMode);
                 myAppState?.rebuildApp();
               },
-            )
+            ),
           ],
         ),
         body: _buildBody(context),
@@ -104,19 +104,15 @@ class _HomePageState extends State<HomePage> {
 
     return PopupMenuItem<MoviesSortBy>(
       value: value,
-      child: Observer(
-        builder: (_) {
-          return Text(
-            title,
-            style: TextStyle(
-              color: currentSortBy == value
-                  ? Colors.green
-                  : isDarkMode
-                      ? Colors.white
-                      : Colors.black,
-            ),
-          );
-        },
+      child: Text(
+        title,
+        style: TextStyle(
+          color: currentSortBy == value
+              ? Colors.green
+              : isDarkMode
+                  ? Colors.white
+                  : Colors.black,
+        ),
       ),
     );
   }
